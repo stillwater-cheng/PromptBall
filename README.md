@@ -1,8 +1,9 @@
 # PromptBall
 PromptBall 是一款轻量级的悬浮工具，旨在为用户提供快速访问和管理常用文本片段的便捷方式。
-![PromptBall 界面截图1](./images/screenshot1.jpg)
 ## 应用场景
 简而言之，经常会用的的文本可以方便地存入。例如：回复导师的、回复女朋友的🤣、常用的Linux命令等等捏。
+
+![PromptBall 界面截图1](./sni.jpg)
 ## 环境
 只需要常规的python环境，建议3.7以上。
 ```bash
