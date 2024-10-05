@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QVBoxLayout, QToolTip,
                              QDialog, QListWidget, QListWidgetItem, QGraphicsDropShadowEffect,
                              QAbstractItemView)
-from PyQt5.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve
+from PyQt5.QtCore import Qt, QPoint, QPropertyAnimation, QEasingCurve, QSize
 from PyQt5.QtGui import QCursor, QIcon, QFontMetrics
 import os
 import json
@@ -34,6 +34,7 @@ QListWidget::item {
     padding: 4px 8px;
     margin: 1px 0;
     border-radius: 5px;
+    height: 30px;  /* 固定每个选项的高度 */
 }
 
 QListWidget::item:hover {
@@ -56,6 +57,9 @@ class OptionsListWidget(QListWidget):
         self.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
         # 调整滚动速度
         self.verticalScrollBar().setSingleStep(10)
+
+        # 固定选项的高度
+        self.setUniformItemSizes(True)  # 启用统一的项大小
 
     def mousePressEvent(self, event):
         item = self.itemAt(event.pos())
@@ -106,10 +110,9 @@ class OptionsDialog(QDialog):
         text_width = font_metrics.boundingRect(sample_text).width()
 
         # 设置固定宽度，并加上一些边距
-        self.list_widget.setFixedWidth(text_width + 40)
+        self.list_widget.setFixedWidth(text_width + 40)  # 加上边距
 
         # 设置文本省略模式
-        self.list_widget.setUniformItemSizes(True)
         self.list_widget.setTextElideMode(Qt.ElideRight)
 
         # 隐藏垂直滚动条，但保留滚动功能
@@ -120,11 +123,17 @@ class OptionsDialog(QDialog):
         self.list_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         for option in self.options:
-            display_text = option  # 显示完整的文本，后续会被省略处理
+            display_text = option[:20]  # 仅显示前20个中文字
+            if len(option) > 20:
+                display_text += '...'  # 超出部分显示省略号
             # 使用图标
             icon = QIcon.fromTheme("edit-copy")
             item = QListWidgetItem(icon, display_text)
             item.setToolTip(option)  # 完整内容作为提示
+
+            # 设置固定高度
+            item.setSizeHint(QSize(text_width + 40, 30))  # 固定高度为30
+
             self.list_widget.addItem(item)
 
         layout = QVBoxLayout()
